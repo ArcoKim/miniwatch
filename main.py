@@ -68,20 +68,21 @@ def monitor():
     for stype,period in zip(types, periods):
         nperiod = int(period)
         graphs.append([stype, nperiod])
-        adate = date[::nperiod]
-        limit = 10
+        if cont and nperiod == 5: 
+            limit = 2
+        else:
+            limit = 10
+        adate = date[::nperiod][-limit:]
         if stype == 'cpu':
-            acpu = cpu[::nperiod]
-            if cont and nperiod == 5: limit = 2
-            plt.plot(adate[-limit:], acpu[-limit:], 'bo-', label="CPU Utilization")
+            acpu = cpu[::nperiod][-limit:]
+            plt.plot(adate, acpu, 'bo-', label="CPU Utilization")
             for ndate, ncpu in zip(adate, acpu):
-                plt.annotate(str(ncpu), (ndate, ncpu), textcoords="offset points", xytext=(0,10), ha='center')
+                plt.text(ndate, ncpu, str(ncpu), ha='center', va='bottom')
         if stype == 'memory':
-            amem = memory[::nperiod]
-            if cont and nperiod == 5: limit = 2
-            plt.plot(adate[-limit:], amem[-limit:], 'ro-', label="Memory Usage")
+            amem = memory[::nperiod][-limit:]
+            plt.plot(adate, amem, 'ro-', label="Memory Usage")
             for ndate, nmem in zip(adate, amem):
-                plt.annotate(str(nmem), (ndate, nmem), textcoords="offset points", xytext=(0,10), ha='center')
+                plt.text(ndate, nmem, str(nmem), ha='center', va='bottom')
 
     for trigger in triggers:
         if trigger[1] == 'cpu': color = 'b'
